@@ -2,6 +2,7 @@ const calculator = document.querySelector(".calculator");
 const keys = calculator.querySelector(".buttons");
 const display = calculator.querySelector(".display");
 
+// Define the calculate function first
 const calculate = (n1, operator, n2) => {
     let result = "";
     if (operator === "add") {
@@ -16,6 +17,7 @@ const calculate = (n1, operator, n2) => {
     return result;
 };
 
+// Add the event listener after the calculate function
 keys.addEventListener("click", e => {
     if (e.target.matches("button")) {
         const key = e.target;
@@ -25,41 +27,42 @@ keys.addEventListener("click", e => {
         const previousKeyType = calculator.dataset.previousKeyType;
 
         if (!action) {
-            if (displayedNum === "0" || 
-                previousKeyType === "operator" ||
-                previousKeyType === "calculate") {
+            if (
+                displayedNum === "0" || 
+                previousKeyType === "operator" || 
+                previousKeyType === "calculate"
+            ) {
                 display.textContent = keyContent;
             } else {
                 display.textContent = displayedNum + keyContent;
             }
+            calculator.dataset.previousKeyType = "number";
         }
 
         if (
             action === "add" ||
             action === "subtract" ||
             action === "multiply" ||
-            action === "divide" ||
-            action === "decimal" ||
-            action === "clear" ||
-            action === "calculate"
+            action === "divide"
         ) {
             key.classList.add("is-depressed");
 
-            if (action !== "calculate") {  // Don't overwrite operator with "calculate"
-                calculator.dataset.previousKeyType = "operator";
+            if (previousKeyType !== "operator") {
                 calculator.dataset.firstValue = displayedNum;
-                calculator.dataset.operator = action; // Set operator when operator button is clicked
             }
+
+            calculator.dataset.operator = action;
+            calculator.dataset.previousKeyType = "operator";
         }
 
         if (action === "decimal") {
             if (!displayedNum.includes(".")) {
                 display.textContent = displayedNum + ".";
             } else if (
-                previousKeyType === 'operator' ||
-                previousKeyType === 'calculate'
+                previousKeyType === "operator" || 
+                previousKeyType === "calculate"
             ) {
-                display.textContent = "0";
+                display.textContent = "0.";
             }
             calculator.dataset.previousKeyType = "decimal";
         }
@@ -81,23 +84,17 @@ keys.addEventListener("click", e => {
             const operator = calculator.dataset.operator;
             const secondValue = displayedNum;
 
-            console.log("First Value:", firstValue);  // Debug log
-            console.log("Operator:", operator);      // Debug log
-            console.log("Second Value:", secondValue); // Debug log
-
-            if (firstValue && operator && secondValue) {
+            if (firstValue && operator && previousKeyType !== "operator") {
                 const result = calculate(firstValue, operator, secondValue);
-                console.log("Result:", result);  // Debug log
 
                 display.textContent = result;
-                calculator.dataset.firstValue = result;  // Store the result as firstValue for further operations
-                calculator.dataset.operator = ""; // Reset operator after calculation
+                calculator.dataset.firstValue = result;
+                calculator.dataset.operator = "";
             }
 
-            calculator.dataset.previousKeyType = "calculate"; // Set previous key type as 'calculate'
+            calculator.dataset.previousKeyType = "calculate";
         }
 
-        // Reset the "is-depressed" state after the button is clicked
         Array.from(key.parentNode.children).forEach(k => k.classList.remove("is-depressed"));
     }
 });
