@@ -19,10 +19,10 @@ To run this project locally, follow these steps:
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone https://github.com/aspectZA27/Calculator.git
+   git clone https://github.com/aspectZA27/calculator.git
 
 2. Navigate to the project directory:
-    cd calculator-project
+    cd calculator
 
 3. Open the index.html file in your preferred browser to see the calculator in action.
 
